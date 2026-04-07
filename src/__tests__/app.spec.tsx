@@ -60,4 +60,21 @@ describe("app", () => {
     await screen.getByRole("button", { name: /submit/i }).click();
     await expect.element(screen.getByText("not found")).toBeVisible();
   });
+
+  it("should display file name on upload", async () => {
+    const screen = await render(<App />);
+
+    const csvFile = new File(
+      [["hello,bar", "world,baz"].join("\n")],
+      "example.csv",
+      {
+        type: "text/csv",
+      }
+    );
+
+    const input = screen.getByLabelText(/upload/i);
+
+    await input.upload(csvFile);
+    await expect.element(screen.getByText("example.csv")).toBeVisible();
+  });
 });
