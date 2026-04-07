@@ -15,6 +15,9 @@ describe("app", () => {
       }
     );
     const input = screen.getByLabelText(/upload/i);
+    await expect
+      .element(screen.getByRole("button", { name: /submit/i }))
+      .not.toBeInTheDocument();
 
     await input.upload(csvFile);
     await screen.getByRole("textbox", { name: /search/i }).fill("hello");
