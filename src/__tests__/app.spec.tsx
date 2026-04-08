@@ -59,6 +59,9 @@ describe("app", () => {
     await screen.getByRole("textbox", { name: /search/i }).fill("foo");
     await screen.getByRole("button", { name: /submit/i }).click();
     await expect.element(screen.getByText("not found")).toBeVisible();
+    await screen.getByRole("textbox", { name: /search/i }).clear();
+    await screen.getByRole("textbox", { name: /search/i }).fill("ba");
+    await expect.element(screen.getByText("not found")).toBeVisible();
   });
 
   it("should display file name on upload", async () => {
