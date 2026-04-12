@@ -1,6 +1,8 @@
 name: oidc-test
 
-on: push
+on:
+  push:
+    branches: [dev]
 
 env:
   AWS_REGION: ap-northeast-1
