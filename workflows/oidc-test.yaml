@@ -1,0 +1,29 @@
+name: oidc-test
+
+on: push
+
+env:
+  AWS_REGION: ap-northeast-1
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  aws-access-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v6
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v6.1.0
+        with:
+          role-to-assume: arn:aws:iam::064137888589:role/which-row-read-access
+          role-session-name: github-to-aws
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: sts GetCallerIdentity
+        run: |
+          aws sts get-caller-identity
+          aws s3 ls
