@@ -29,3 +29,13 @@ jobs:
         run: |
           aws sts get-caller-identity
           aws s3 ls
+
+  slack-notification:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: slack notify
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
