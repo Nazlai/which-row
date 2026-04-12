@@ -31,6 +31,8 @@ jobs:
           aws s3 ls
 
   slack-notification:
+    environment: dev
+    needs: aws-access-test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
