@@ -22,7 +22,13 @@ export class DeployStack extends Stack {
       domainName: domainName,
     });
 
-    const bucket = new Bucket(this, "importedBucket");
+    const bucket = new Bucket(this, "bucket", {
+      blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      enforceSSL: true,
+      versioned: false,
+      encryption: BucketEncryption.S3_MANAGED,
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
 
     new BucketDeployment(this, "bucketDeployment", {
       sources: [Source.asset("../source/dist")],
