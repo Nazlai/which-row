@@ -19,6 +19,7 @@ const deployStack = new DeployStack(app, "deployStack", {
     region: ENV.REGION,
     account: ENV.ACCOUNT_ID,
   },
+  crossRegionReferences: true,
 });
 
 deployStack.addDependency(certificateStack);
