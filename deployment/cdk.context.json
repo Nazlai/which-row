@@ -1,0 +1,10 @@
+{
+  "hosted-zone:account=064137888589:domainName=tageszeiten.com:region=us-east-1": {
+    "Id": "/hostedzone/Z002893116ARO150BEA7C",
+    "Name": "tageszeiten.com."
+  },
+  "hosted-zone:account=064137888589:domainName=tageszeiten.com:region=ap-northeast-1": {
+    "Id": "/hostedzone/Z002893116ARO150BEA7C",
+    "Name": "tageszeiten.com."
+  }
+}
