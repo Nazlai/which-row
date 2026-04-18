@@ -41,7 +41,7 @@ export class DeployStack extends Stack {
     );
 
     const certificateArnLookup = certificateArn.includes("dummy-value")
-      ? `arn:aws:acm:${ENV.REGION}:${ENV.ACCOUNT_ID}:certificate/dummy-id`
+      ? `arn:aws:acm:us-east-1:${ENV.ACCOUNT_ID}:certificate/dummy-id`
       : certificateArn;
 
     const certificate = Certificate.fromCertificateArn(
