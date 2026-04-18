@@ -1,1 +1,2 @@
+cd source
 npx lint-staged
