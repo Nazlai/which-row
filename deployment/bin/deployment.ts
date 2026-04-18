@@ -12,6 +12,7 @@ const certificateStack = new CertificateStack(app, "certificateStack", {
     region: "us-east-1",
     account: ENV.ACCOUNT_ID,
   },
+  crossRegionReferences: true,
 });
 
 const deployStack = new DeployStack(app, "deployStack", {
