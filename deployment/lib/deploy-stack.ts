@@ -12,7 +12,6 @@ import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
 import { CloudFrontTarget } from "aws-cdk-lib/aws-route53-targets";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
-import { ENV } from "./env";
 
 export class DeployStack extends Stack {
   constructor(scope: App, id: string, props: StackProps) {
@@ -45,14 +44,10 @@ export class DeployStack extends Stack {
       "certificate-arn",
     );
 
-    const certificateArnLookup = certificateArn.includes("dummy-value")
-      ? `arn:aws:acm:us-east-1:${ENV.ACCOUNT_ID}:certificate/dummy-id`
-      : certificateArn;
-
     const certificate = Certificate.fromCertificateArn(
       this,
       "certificate",
-      certificateArnLookup,
+      certificateArn,
     );
 
     const distribution = new Distribution(this, "distribution", {
