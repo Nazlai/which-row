@@ -3,6 +3,7 @@ import { App } from "aws-cdk-lib";
 import { CertificateStack } from "../lib/cert-stack";
 import { DeployStack } from "../lib/deploy-stack";
 import { ENV } from "../lib/env";
+import { StringParameter } from "aws-cdk-lib/aws-ssm";
 
 const app = new App();
 
@@ -13,9 +14,16 @@ const certificateStack = new CertificateStack(app, "certificateStack", {
   },
 });
 
-new DeployStack(app, "deployStack", {
+const deployStack = new DeployStack(app, "deployStack", {
   env: {
     region: ENV.REGION,
     account: ENV.ACCOUNT_ID,
   },
-}).addDependency(certificateStack);
+});
+
+deployStack.addDependency(certificateStack);
+
+new StringParameter(deployStack, "parameter", {
+  parameterName: "certificate-arn",
+  stringValue: certificateStack.certificateArn,
+});

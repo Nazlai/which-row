@@ -5,9 +5,9 @@ import {
 } from "aws-cdk-lib/aws-certificatemanager";
 import { domain, domainName } from "./constants";
 import { HostedZone } from "aws-cdk-lib/aws-route53";
-import { StringParameter } from "aws-cdk-lib/aws-ssm";
 
 export class CertificateStack extends Stack {
+  public readonly certificateArn: string;
   constructor(scope: App, id: string, props: StackProps) {
     super(scope, id, props);
 
@@ -20,9 +20,6 @@ export class CertificateStack extends Stack {
       validation: CertificateValidation.fromDns(hostedZone),
     });
 
-    new StringParameter(this, "parameter", {
-      parameterName: "certificate-arn",
-      stringValue: certificate.certificateArn,
-    });
+    this.certificateArn = certificate.certificateArn;
   }
 }
