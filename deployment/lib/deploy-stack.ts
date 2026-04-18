@@ -35,7 +35,12 @@ export class DeployStack extends Stack {
       destinationBucket: bucket,
     });
 
-    const certificateArn = StringParameter.valueFromLookup(
+    // const certificateArn = StringParameter.valueFromLookup(
+    //   this,
+    //   "certificate-arn",
+    // );
+
+    const certificateArn = StringParameter.valueForStringParameter(
       this,
       "certificate-arn",
     );
