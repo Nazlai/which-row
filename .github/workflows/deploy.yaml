@@ -37,11 +37,12 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: install cdk
-        run: npm i -g aws-cdk
+        run: npm ci
+        working-directory: ./deployment
 
       - name: deploy via cdk
         working-directory: ./deployment
-        run: cdk deploy
+        run: npx cdk deploy
 
   slack-notification:
     environment: prod
