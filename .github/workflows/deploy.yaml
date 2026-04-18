@@ -42,7 +42,7 @@ jobs:
 
       - name: deploy via cdk
         working-directory: ./deployment
-        run: npx cdk deploy --all
+        run: npx cdk deploy --all --require-approval never
 
   slack-notification:
     environment: prod
