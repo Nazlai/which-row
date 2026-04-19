@@ -1,5 +1,10 @@
 import { App, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
-import { Distribution, ViewerProtocolPolicy } from "aws-cdk-lib/aws-cloudfront";
+import {
+  Distribution,
+  Function,
+  FunctionEventType,
+  ViewerProtocolPolicy,
+} from "aws-cdk-lib/aws-cloudfront";
 import { S3BucketOrigin } from "aws-cdk-lib/aws-cloudfront-origins";
 import {
   BlockPublicAccess,
@@ -10,11 +15,13 @@ import { BucketDeployment, Source } from "aws-cdk-lib/aws-s3-deployment";
 import { domain, domainName, subDomain } from "./constants";
 import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
 import { CloudFrontTarget } from "aws-cdk-lib/aws-route53-targets";
-import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 
+interface DeployStackProps extends StackProps {
+  certificateArn: string;
+}
 export class DeployStack extends Stack {
-  constructor(scope: App, id: string, props: StackProps) {
+  constructor(scope: App, id: string, props: DeployStackProps) {
     super(scope, id, props);
 
     const hostedZone = HostedZone.fromLookup(this, "zone", {
@@ -34,26 +41,31 @@ export class DeployStack extends Stack {
       destinationBucket: bucket,
     });
 
-    // const certificateArn = StringParameter.valueFromLookup(
-    //   this,
-    //   "certificate-arn",
-    // );
-
-    const certificateArn = StringParameter.valueForStringParameter(
-      this,
-      "certificate-arn",
-    );
-
     const certificate = Certificate.fromCertificateArn(
       this,
       "certificate",
-      certificateArn,
+      props.certificateArn,
+    );
+
+    const redirectFunction = Function.fromFunctionAttributes(
+      this,
+      "distributionReroute",
+      {
+        functionArn: "arn:aws:cloudfront::064137888589:function/csvs_reroute",
+        functionName: "csvs_reroute",
+      },
     );
 
     const distribution = new Distribution(this, "distribution", {
       defaultBehavior: {
         origin: S3BucketOrigin.withOriginAccessControl(bucket),
         viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        functionAssociations: [
+          {
+            function: redirectFunction,
+            eventType: FunctionEventType.VIEWER_REQUEST,
+          },
+        ],
       },
       domainNames: [domain],
       certificate: certificate,
