@@ -1,11 +1,8 @@
-import { App, Duration, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
+import { App, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import {
   Distribution,
   Function,
   FunctionEventType,
-  HeadersFrameOption,
-  HeadersReferrerPolicy,
-  ResponseHeadersPolicy,
   ViewerProtocolPolicy,
 } from "aws-cdk-lib/aws-cloudfront";
 import { S3BucketOrigin } from "aws-cdk-lib/aws-cloudfront-origins";
@@ -59,41 +56,6 @@ export class DeployStack extends Stack {
       },
     );
 
-    const myResponseHeadersPolicy = new ResponseHeadersPolicy(
-      this,
-      "responseHeadersPolicy",
-      {
-        responseHeadersPolicyName: "myResponseHeadersPolicy",
-        securityHeadersBehavior: {
-          contentSecurityPolicy: {
-            contentSecurityPolicy: "default-src 'self'",
-            override: true,
-          },
-          referrerPolicy: {
-            referrerPolicy: HeadersReferrerPolicy.NO_REFERRER,
-            override: true,
-          },
-          strictTransportSecurity: {
-            accessControlMaxAge: Duration.seconds(31536000),
-            includeSubdomains: true,
-            override: true,
-          },
-          contentTypeOptions: {
-            override: true,
-          },
-          xssProtection: {
-            protection: true,
-            override: true,
-          },
-          frameOptions: {
-            frameOption: HeadersFrameOption.DENY,
-            override: true,
-          },
-        },
-        removeHeaders: ["Server"],
-      },
-    );
-
     const distribution = new Distribution(this, "distribution", {
       defaultBehavior: {
         origin: S3BucketOrigin.withOriginAccessControl(bucket),
@@ -104,7 +66,6 @@ export class DeployStack extends Stack {
             eventType: FunctionEventType.VIEWER_REQUEST,
           },
         ],
-        responseHeadersPolicy: myResponseHeadersPolicy,
       },
       domainNames: [domain],
       certificate: certificate,
